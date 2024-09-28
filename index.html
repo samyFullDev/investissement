@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Investissement</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #14151A;
+            color: #F0B90B;
+        }
+
+        header {
+            padding: 15px;
+            background-color: #14151A;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #F0B90B;
+            margin-bottom: 10px;
+        }
+
+        .investment-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .investment-section .balance {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ff0000;
+            margin-bottom: 10px;
+        }
+
+        .investment-section button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #F0B90B;
+            color: #14151A;
+            border: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            background-color: #1E2329;
+            margin: 20px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            color: white;
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 300px;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .info-container {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .price-info {
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .price-info .price {
+            font-size: 40px;
+            font-weight: bold;
+            color: #222;
+        }
+
+        .price-info .price-change {
+            font-size: 16px;
+            margin-top: 10px;
+            color: #999;
+        }
+
+        .buy-button,
+        .sell-button {
+            padding: 15px;
+            font-size: 20px;
+            width: 100%;
+            border: none;
+            cursor: pointer;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .buy-button {
+            background-color: #00bfa5;
+            color: #ffffff;
+        }
+
+        .sell-button {
+            background-color: #ff5252;
+            color: #ffffff;
+        }
+
+        .notif-group {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            row-gap: 5px;
+        }
+
+        .notif {
+            width: 220px;
+            padding: 10px;
+            border-radius: 10px;
+            background: #333;
+            color: green;
+            opacity: 1;
+            transition: opacity 1s ease;
+        }
+
+        @media screen and (min-width: 768px) {
+            header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .investment-section {
+                flex-direction: row;
+                align-items: center;
+            }
+
+            .investment-section .balance {
+                margin-bottom: 0;
+                margin-right: 20px;
+            }
+
+            .investment-section button {
+                margin-left: 10px;
+                margin-top: 0;
+                width: auto;
+            }
+
+            .container {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+
+            .chart-container {
+                width: 70%;
+                height: 500px;
+                margin-bottom: 0;
+            }
+
+            .info-container {
+                width: 28%;
+                margin-top: 0;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .logo {
+                margin-top: 50px;
+            }
+
+            .chart-container {
+                margin-top: 80px;
+            }
+
+            .investment-section button {
+                width: 100%;
+            }
+
+            .price-info .price {
+                font-size: 32px; /* Adjust font size for smaller screens */
+            }
+
+            .buy-button,
+            .sell-button {
+                font-size: 16px; /* Smaller buttons on mobile */
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">AFRICA TRADING INVESTISSEMENT</div>
+        <div class="investment-section">
+            <div class="balance" id="balance">Votre solde: 0 FCFA</div>
+            <button id="invest-button" aria-label="Investir maintenant">Je veux investir</button>
+            <button id="withdraw-button" aria-label="Retirer de l'argent">Retirer</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="chart-container">
+            <div id="chart">Graphique</div>
+        </div>
+
+        <div class="info-container">
+            <div class="price-info">
+                <div class="price" id="current-price">222.50</div>
+                <div class="price-change">-0.27 (-0.12%)</div>
+            </div>
+
+            <button class="buy-button" id="buy-button">Acheter 222.50</button>
+            <button class="sell-button" id="sell-button">Vendre 222.50</button>
+        </div>
+    </div>
+
+    <div class="notifications notif-group" id="notifications"></div>
+
+    <script src="https://s3.tradingview.com/tv.js"></script>
+    <script>
+        let balance = 0;
+        let currentPrice = 222.50;
+
+        const withdrawalNotifications = [
+            'Mamadou Diao a retiré 2 450 000 FCFA 🎉✨',
+            'Fatoumata Traoré a retiré 1 200 000 FCFA 🎉✨',
+            'Alioune Badara a retiré 650 000 FCFA 🎉✨',
+            'Aissatou Diallo a retiré 3 000 000 FCFA 🎉✨',
+            'Oumar Sarr a retiré 4 000 000 FCFA 🎉✨',
+            'Abdoulaye Ndiaye a retiré 950 000 FCFA 🎉✨',
+            'Khadidiatou Sy a retiré 1 500 000 FCFA 🎉✨',
+            'Serigne Diop a retiré 850 000 FCFA 🎉✨',
+            'Pape Cheikh a retiré 2 800 000 FCFA 🎉✨',
+            'Mame Diarra a retiré 700 000 FCFA 🎉✨',
+            'Seydou Kane a retiré 3 500 000 FCFA 🎉✨',
+            'Moustapha Faye a retiré 1 600 000 FCFA 🎉✨',
+            'Ousmane Cissé a retiré 2 700 000 FCFA 🎉✨',
+            'Mariam Fall a retiré 3 900 000 FCFA 🎉✨',
+            'Daba Sow a retiré 850 000 FCFA 🎉✨',
+            'Salimata Ba a retiré 1 300 000 FCFA 🎉✨',
+            'Modou Gaye a retiré 2 200 000 FCFA 🎉✨',
+            'Lamine Sarr a retiré 1 750 000 FCFA 🎉✨',
+            'Ndiouga Ndiaye a retiré 4 500 000 FCFA 🎉✨',
+            'Fatou Ndiaye a retiré 1 900 000 FCFA 🎉✨',
+            'Abiba Seck a retiré 2 050 000 FCFA 🎉✨',
+            'Ibrahima Diallo a retiré 850 000 FCFA 🎉✨',
+            'Thierno Bâ a retiré 3 250 000 FCFA 🎉✨',
+            'Adama Ndiaye a retiré 950 000 FCFA 🎉✨',
+            'Khady Seck a retiré 1 400 000 FCFA 🎉✨',
+            'Mbaye Diagne a retiré 3 600 000 FCFA 🎉✨',
+            'Awa Kane a retiré 2 150 000 FCFA 🎉✨',
+            'Yacine Sow a retiré 1 850 000 FCFA 🎉✨',
+            'Cheikh Sarr a retiré 4 700 000 FCFA 🎉✨',
+            'Abdoul Faye a retiré 2 000 000 FCFA 🎉✨'
+        ];
+
+        function showNotification(message) {
+            const notificationContainer = document.getElementById('notifications');
+            const notificationItem = document.createElement('div');
+            notificationItem.classList.add('notif');
+            notificationItem.innerText = message;
+            notificationContainer.appendChild(notificationItem);
+
+            setTimeout(() => {
+                notificationItem.style.opacity = '0';
+                setTimeout(() => {
+                    notificationItem.remove();
+                }, 1000);
+            }, 2000);
+        }
+
+        function showRandomNotifications() {
+            if (withdrawalNotifications.length > 0) {
+                const randomIndex = Math.floor(Math.random() * withdrawalNotifications.length);
+                const randomMessage = withdrawalNotifications[randomIndex];
+                showNotification(randomMessage);
+                withdrawalNotifications.splice(randomIndex, 1);
+
+                const randomDelay = Math.random() * 2000 + 1000;
+                setTimeout(showRandomNotifications, randomDelay);
+            }
+        }
+
+        window.onload = () => {
+            showRandomNotifications();
+        };
+
+        document.getElementById('invest-button').addEventListener('click', () => {
+            window.location.href = "file:///C:/Users/pizan/Desktop/bolo/africa.html"; // Change this path if necessary
+        });
+
+        document.getElementById('withdraw-button').addEventListener('click', () => {
+            alert("Veuillez investir");
+        });
+
+        document.getElementById('buy-button').addEventListener('click', () => {
+            const cost = currentPrice;
+            if (balance >= cost) {
+                balance -= cost;
+                updateBalance();
+                showNotification(`Vous avez acheté une action à ${cost} FCFA.`);
+            } else {
+                alert('Solde insuffisant pour acheter cette action');
+            }
+        });
+
+        document.getElementById('sell-button').addEventListener('click', () => {
+            balance += currentPrice;
+            updateBalance();
+            showNotification(`Vous avez vendu une action à ${currentPrice} FCFA.`);
+        });
+
+        function updateBalance() {
+            document.getElementById('balance').innerText = `Votre solde: ${balance.toLocaleString()} FCFA`;
+        }
+
+        new TradingView.widget({
+            container_id: "chart",
+            symbol: "NASDAQ:AAPL",
+            interval: "D",
+            timezone: "Etc/UTC",
+            theme: "light",
+            style: "1",
+            locale: "fr",
+            enable_publishing: false,
+            allow_symbol_change: true,
+            hideideas: true,
+        });
+    </script>
+</body>
+
+</html>

