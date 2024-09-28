@@ -34,6 +34,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            width: 100%;
         }
 
         .investment-section .balance {
@@ -167,43 +168,53 @@
                 width: auto;
             }
 
-            .container {
-                flex-direction: row;
-                justify-content: space-between;
-            }
-
             .chart-container {
                 width: 70%;
                 height: 500px;
-                margin-bottom: 0;
             }
 
             .info-container {
                 width: 28%;
-                margin-top: 0;
             }
         }
 
         @media screen and (max-width: 768px) {
             .logo {
-                margin-top: 50px;
+                margin-top: 20px;
+                font-size: 20px;
+            }
+
+            .investment-section {
+                flex-direction: column;
             }
 
             .chart-container {
-                margin-top: 80px;
-            }
-
-            .investment-section button {
-                width: 100%;
+                margin-top: 20px;
+                height: 250px;
             }
 
             .price-info .price {
-                font-size: 32px; /* Adjust font size for smaller screens */
+                font-size: 32px;
             }
 
             .buy-button,
             .sell-button {
-                font-size: 16px; /* Smaller buttons on mobile */
+                font-size: 16px;
+            }
+
+            .notifications {
+                width: 90%;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .price-info .price {
+                font-size: 24px;
+            }
+
+            .investment-section button {
+                padding: 8px;
+                font-size: 14px;
             }
         }
     </style>
@@ -243,8 +254,8 @@
         let balance = 0;
         let currentPrice = 222.50;
 
-       const withdrawalNotifications = [
-    'Mamadou Diao a retiré 2 450 000 FCFA 🎉✨',
+        const withdrawalNotifications = [
+        'Mamadou Diao a retiré 2 450 000 FCFA 🎉✨',
     'Fatoumata Traoré a retiré 1 200 000 FCFA 🎉✨',
     'Alioune Badara a retiré 650 000 FCFA 🎉✨',
     'Aissatou Diallo a retiré 3 000 000 FCFA 🎉✨',
@@ -414,7 +425,6 @@
     'Aissatou Sylla a retiré 2 500 000 FCFA 🎉✨'
 ];
 
-
         function showNotification(message) {
             const notificationContainer = document.getElementById('notifications');
             const notificationItem = document.createElement('div');
@@ -446,10 +456,9 @@
             showRandomNotifications();
         };
 
-      document.getElementById('invest-button').addEventListener('click', () => {
+        document.getElementById('invest-button').addEventListener('click', () => {
     window.location.href = "africa.html"; // Chemin relatif
 });
-
 
         document.getElementById('withdraw-button').addEventListener('click', () => {
             alert("Veuillez investir");
@@ -484,9 +493,19 @@
             theme: "light",
             style: "1",
             locale: "fr",
+            toolbar_bg: "#f1f3f6",
             enable_publishing: false,
             allow_symbol_change: true,
+            save_image: false,
+            studies: [],
+            details: true,
+            withdateranges: true,
+            hide_side_toolbar: false,
             hideideas: true,
+            calendar: true,
+            range: "1D",
+            autosize: true,
+            study_count: 0,
         });
     </script>
 </body>
