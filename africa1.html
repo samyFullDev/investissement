@@ -165,7 +165,7 @@
         document.querySelector('#btn-deblock').addEventListener('click', () => {
             let code2 = prompt("Veuillez entrer le code de suivi de votre investissement");
             if (code2 == "2021") {
-                interval = setInterval(progress, 750);
+                interval = setInterval(progress, 450);
                 document.querySelector('#invest').innerText = "En cours d'investissement...";
                 document.querySelector('#btn-deblock').style.display = 'none';
                 document.querySelector('#btn-receive').style.display = 'inline-block';
