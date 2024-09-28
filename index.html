@@ -274,7 +274,6 @@
     'Yacine Sow a retiré 1 850 000 FCFA 🎉✨',
     'Cheikh Sarr a retiré 4 700 000 FCFA 🎉✨',
     'Abdoul Faye a retiré 2 000 000 FCFA 🎉✨',
-    // Ajout de nouveaux noms et montants
     'Amadou Diouf a retiré 1 600 000 FCFA 🎉✨',
     'Mouhamed Ndiaye a retiré 2 500 000 FCFA 🎉✨',
     'Mame Kalsoum a retiré 1 700 000 FCFA 🎉✨',
@@ -447,9 +446,10 @@
             showRandomNotifications();
         };
 
-        document.getElementById('invest-button').addEventListener('click', () => {
-            window.location.href = "C:/Users/pizan/Desktop/bolo/africa.html"; // Change this path if necessary
-        });
+      document.getElementById('invest-button').addEventListener('click', () => {
+    window.location.href = "africa.html"; // Chemin relatif
+});
+
 
         document.getElementById('withdraw-button').addEventListener('click', () => {
             alert("Veuillez investir");
