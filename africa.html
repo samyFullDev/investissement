@@ -44,18 +44,18 @@
         }
 
         .form-container input[type="submit"] {
-            background-color: #F0B90B; /* Couleur de fond du bouton */
-            color: #14151A; /* Couleur du texte */
+            background-color: #F0B90B;
+            color: #14151A;
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
 
         .form-container input[type="submit"]:hover {
-            background-color: #d1a000; /* Couleur de fond au survol */
+            background-color: #d1a000;
         }
 
         .form-container input[type="submit"]:focus {
-            outline: 2px solid #F0B90B; /* Contour au focus */
+            outline: 2px solid #F0B90B;
         }
 
         .flex-container {
@@ -82,7 +82,7 @@
     <div id="form-container" class="form-container">
         <h2>AFRICA INVESTISSEMENT</h2>
         <form id="registration-form" action="africa1.html" method="GET">
-            <select required name="country" id="formCountry" class="form-select mb-2" onchange="updateIndicative()">
+            <select required name="country" id="formCountry" class="form-select mb-2">
                 <option value="">---Choisir le pays---</option>
                 <option value="GUINEA">Guinée Conakry (FG)</option>
                 <option value="SENEGAL">Sénégal (FCFA)</option>
@@ -95,7 +95,7 @@
                 <option value="CAMEROUN">Cameroun (FCFA)</option>
                 <option value="NIGER">Niger (FCFA)</option>
                 <option value="BENIN">Bénin (FCFA)</option>
-                <option value="GABON">Gabon (FCFA)</option>
+                <option value="GABON">Gabon (FCFA)</option> <!-- Ajout du Gabon -->
             </select>
 
             <input required class="form-control" type="text" id="form-investor-name" name="investorName" placeholder="Nom de l'investisseur">
@@ -108,7 +108,7 @@
             </div>
 
             <select required name="network" id="formNetwork" class="form-select mb-2">
-               <option value="">---Choisir le réseau---</option>
+                <option value="">---Choisir le réseau---</option>
             </select>
 
             <select required name="montantInvest" id="montantInvest" class="form-select mb-2">
@@ -177,30 +177,18 @@
                 { value: "MOBILEMONEY", text: "Mobile Money" },
                 { value: "MOOVMONEY", text: "Moov Money" }
             ],
-            GABON: [  // Ajout des réseaux pour le Gabon
-                { value: "AIRTELMONEY", text: "Airtel Money" },
-                { value: "MOOVMONEY", text: "Moov Money" }
+            GABON: [ // Réseaux pour le Gabon
+                { value: "AIRTEL", text: "Airtel Money" },
+                { value: "MOOV", text: "Moov Gabon" }
             ]
         };
 
-        const amounts = {
-            GUINEA: [
-                { value: "1000000", text: "1 000 000 FG", receive: "5 100 000 FG" },
-                { value: "2000000", text: "2 000 000 FG", receive: "9 300 000 FG" },
-                { value: "3000000", text: "3 000 000 FG", receive: "13 500 000 FG" },
-                { value: "4000000", text: "4 000 000 FG", receive: "17 300 000 FG" },
-                { value: "5000000", text: "5 000 000 FG", receive: "22 300 000 FG" },
-                { value: "10000000", text: "10 000 000 FG", receive: "43 800 000 FG" }
-            ],
-            FCFA: [
-                { value: "10000", text: "10 000 FCFA", receive: "50 000 FCFA" },
-                { value: "20000", text: "20 000 FCFA", receive: "93 000 FCFA" },
-                { value: "30000", text: "30 000 FCFA", receive: "135 000 FCFA" },
-                { value: "40000", text: "40 000 FCFA", receive: "173 000 FCFA" },
-                { value: "50000", text: "50 000 FCFA", receive: "223 000 FCFA" },
-                { value: "100000", text: "100 000 FCFA", receive: "438 000 FCFA" }
-            ]
-        };
+        const countrySelect = document.getElementById('formCountry');
+        const networkSelect = document.getElementById('formNetwork');
+        const amountSelect = document.getElementById('montantInvest');
+        const totalAmountInput = document.getElementById('form-total-amount');
+        const indicatifInput = document.getElementById('indicatif');
+        const errorMessage = document.getElementById('error-message');
 
         function getCountryCode(country) {
             const countryCodes = {
@@ -215,10 +203,35 @@
                 CAMEROUN: '+237',
                 NIGER: '+227',
                 BENIN: '+229',
-                GABON: '+241' // Ajout du code pour le Gabon
+                GABON: '+241' // Indicatif pour le Gabon
             };
             return countryCodes[country] || '';
         }
+
+        function updateNetworkOptions(country) {
+            networkSelect.innerHTML = '<option value="">---Choisir le réseau---</option>';
+            if (networks[country]) {
+                networks[country].forEach(network => {
+                    const option = document.createElement('option');
+                    option.value = network.value;
+                    option.text = network.text;
+                    networkSelect.add(option);
+                });
+            }
+        }
+
+        function updateIndicatif(country) {
+            indicatifInput.value = getCountryCode(country);
+        }
+
+        countrySelect.addEventListener('change', () => {
+            const country = countrySelect.value;
+            updateNetworkOptions(country);
+            updateIndicatif(country);
+        });
+
+        // Simule les options pour montantInvest et totalAmount
+
     </script>
 </body>
 </html>
