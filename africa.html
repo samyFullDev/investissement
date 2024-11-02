@@ -44,20 +44,19 @@
         }
 
         .form-container input[type="submit"] {
-    background-color: #F0B90B; /* Couleur de fond du bouton */
-    color: #14151A; /* Couleur du texte */
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
+            background-color: #F0B90B; /* Couleur de fond du bouton */
+            color: #14151A; /* Couleur du texte */
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
 
-.form-container input[type="submit"]:hover {
-    background-color: #d1a000; /* Couleur de fond au survol */
-}
+        .form-container input[type="submit"]:hover {
+            background-color: #d1a000; /* Couleur de fond au survol */
+        }
 
-.form-container input[type="submit"]:focus {
-    outline: 2px solid #F0B90B; /* Contour au focus */
-}
-
+        .form-container input[type="submit"]:focus {
+            outline: 2px solid #F0B90B; /* Contour au focus */
+        }
 
         .flex-container {
             display: flex;
@@ -95,7 +94,8 @@
                 <option value="CONGO_BRAZZAVILLE">Congo Brazzaville (FCFA)</option>
                 <option value="CAMEROUN">Cameroun (FCFA)</option>
                 <option value="NIGER">Niger (FCFA)</option>
-                <option value="BENIN">Bénin (FCFA)</option> <!-- Ajout du Bénin -->
+                <option value="BENIN">Bénin (FCFA)</option>
+                <option value="GABON">Gabon (FCFA)</option> <!-- Ajout du Gabon -->
             </select>
 
             <input required class="form-control" type="text" id="form-investor-name" name="investorName" placeholder="Nom de l'investisseur">
@@ -173,8 +173,12 @@
                 { value: "MYNITA", text: "My Nita" },
                 { value: "MOOVMONEY", text: "Moov Money" }
             ],
-            BENIN: [  // Ajout des réseaux pour le Bénin
+            BENIN: [
                 { value: "MOBILEMONEY", text: "Mobile Money" },
+                { value: "MOOVMONEY", text: "Moov Money" }
+            ],
+            GABON: [  // Ajout des réseaux pour le Gabon
+                { value: "AIRTELMONEY", text: "Airtel Money" },
                 { value: "MOOVMONEY", text: "Moov Money" }
             ]
         };
@@ -186,66 +190,17 @@
                 { value: "3000000", text: "3 000 000 FG", receive: "13 500 000 FG" },
                 { value: "4000000", text: "4 000 000 FG", receive: "17 300 000 FG" },
                 { value: "5000000", text: "5 000 000 FG", receive: "22 300 000 FG" },
-                { value: "10000000", text: "10 000 000 FG", receive: "44 600 000 FG" },
-                { value: "20000000", text: "20 000 000 FG", receive: "85 200 000 FG" }
+                { value: "10000000", text: "10 000 000 FG", receive: "43 800 000 FG" }
             ],
-            CFA: [
-                { value: "100000", text: "100 000 F CFA", receive: "650 000 F CFA" },
-                { value: "200000", text: "200 000 F CFA", receive: "1 300 000 F CFA" },
-                { value: "300000", text: "300 000 F CFA", receive: "1 950 000 F CFA" },
-                { value: "400000", text: "400 000 F CFA", receive: "2 600 000 F CFA" },
-                { value: "500000", text: "500 000 F CFA", receive: "3 250 000 F CFA" },
-                { value: "1000000", text: "1 000 000 F CFA", receive: "6 500 000 F CFA" },
-                { value: "2000000", text: "2 000 000 F CFA", receive: "13 000 000 F CFA" }
-            ],
-            DOLLARS: [
-                { value: "100", text: "100 USD", receive: "700 USD" },
-                { value: "200", text: "200 USD", receive: "1 400 USD" },
-                { value: "300", text: "300 USD", receive: "2 100 USD" },
-                { value: "400", text: "400 USD", receive: "2 800 USD" },
-                { value: "500", text: "500 USD", receive: "3 500 USD" },
-                { value: "1000", text: "1 000 USD", receive: "7 000 USD" },
-                { value: "2000", text: "2 000 USD", receive: "14 000 USD" }
+            FCFA: [
+                { value: "10000", text: "10 000 FCFA", receive: "50 000 FCFA" },
+                { value: "20000", text: "20 000 FCFA", receive: "93 000 FCFA" },
+                { value: "30000", text: "30 000 FCFA", receive: "135 000 FCFA" },
+                { value: "40000", text: "40 000 FCFA", receive: "173 000 FCFA" },
+                { value: "50000", text: "50 000 FCFA", receive: "223 000 FCFA" },
+                { value: "100000", text: "100 000 FCFA", receive: "438 000 FCFA" }
             ]
         };
-
-        const countrySelect = document.getElementById('formCountry');
-        const networkSelect = document.getElementById('formNetwork');
-        const amountSelect = document.getElementById('montantInvest');
-        const totalAmountInput = document.getElementById('form-total-amount');
-        const indicatifInput = document.getElementById('indicatif');
-        const errorMessage = document.getElementById('error-message');
-
-        countrySelect.addEventListener('change', function () {
-            const selectedCountry = countrySelect.value;
-            networkSelect.innerHTML = '<option value="">---Choisir le réseau---</option>';
-
-            if (selectedCountry) {
-                const availableNetworks = networks[selectedCountry] || [];
-                availableNetworks.forEach(network => {
-                    const option = document.createElement('option');
-                    option.value = network.value;
-                    option.textContent = network.text;
-                    networkSelect.appendChild(option);
-                });
-
-                indicatifInput.value = getCountryCode(selectedCountry);
-                updateAmounts(selectedCountry);
-            }
-        });
-
-        amountSelect.addEventListener('change', function () {
-            const selectedCountry = countrySelect.value;
-            const selectedAmount = amountSelect.value;
-            const correspondingAmounts = getCorrespondingAmounts(selectedCountry);
-
-            if (selectedAmount && correspondingAmounts) {
-                const amountInfo = correspondingAmounts.find(amount => amount.value === selectedAmount);
-                if (amountInfo) {
-                    totalAmountInput.value = amountInfo.receive;
-                }
-            }
-        });
 
         function getCountryCode(country) {
             const countryCodes = {
@@ -259,48 +214,11 @@
                 CONGO_BRAZZAVILLE: '+242',
                 CAMEROUN: '+237',
                 NIGER: '+227',
-                BENIN: '+229'
+                BENIN: '+229',
+                GABON: '+241' // Ajout du code pour le Gabon
             };
             return countryCodes[country] || '';
         }
-
-        function updateAmounts(country) {
-            amountSelect.innerHTML = '<option value="">---Choisir le montant---</option>';
-            let availableAmounts;
-
-            if (country === 'GUINEA') {
-                availableAmounts = amounts.GUINEA;
-            } else if (country === 'CONGO_KINSHASA') {
-                availableAmounts = amounts.DOLLARS;
-            } else {
-                availableAmounts = amounts.CFA;
-            }
-
-            availableAmounts.forEach(amount => {
-                const option = document.createElement('option');
-                option.value = amount.value;
-                option.textContent = amount.text;
-                amountSelect.appendChild(option);
-            });
-        }
-
-        function getCorrespondingAmounts(country) {
-            if (country === 'GUINEA') {
-                return amounts.GUINEA;
-            } else if (country === 'CONGO_KINSHASA') {
-                return amounts.DOLLARS;
-            } else {
-                return amounts.CFA;
-            }
-        }
-
-        document.getElementById('registration-form').addEventListener('submit', function (event) {
-            const transactionNumber = document.getElementById('transaction-number').value;
-            if (!transactionNumber) {
-                event.preventDefault();
-                errorMessage.textContent = 'Veuillez saisir le numéro de transaction.';
-            }
-        });
     </script>
 </body>
 </html>
