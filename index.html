@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trading Investissement</title>
     <style>
+        /* Style global */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -73,7 +74,6 @@
             height: 300px;
             background-color: #ffffff;
             border: 1px solid #ddd;
-            position: relative;
             margin-bottom: 20px;
         }
 
@@ -146,346 +146,185 @@
             transition: opacity 1s ease;
         }
 
-        @media screen and (min-width: 768px) {
-            header {
-                flex-direction: row;
-                justify-content: space-between;
-                align-items: center;
-            }
-
-            .investment-section {
-                flex-direction: row;
-                align-items: center;
-            }
-
-            .investment-section .balance {
-                margin-bottom: 0;
-                margin-right: 20px;
-            }
-
-            .investment-section button {
-                margin-left: 10px;
-                margin-top: 0;
-                width: auto;
-            }
-
-            .chart-container {
-                width: 70%;
-                height: 100%;
-            }
-
-            .info-container {
-                width: 28%;
-            }
+        #access-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #1E2329;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
         }
 
-        @media screen and (max-width: 768px) {
-            .logo {
-                margin-top: 20px;
-                font-size: 20px;
-            }
-
-            .investment-section {
-                flex-direction: column;
-            }
-
-            .chart-container {
-                margin-top: 20px;
-                height: 100%;
-            }
-
-            .price-info .price {
-                font-size: 32px;
-            }
-
-            .buy-button,
-            .sell-button {
-                font-size: 16px;
-            }
-
-            .notifications {
-                width: 90%;
-            }
+        #access-container h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #F0B90B;
         }
 
-        @media screen and (max-width: 480px) {
-            .price-info .price {
-                font-size: 24px;
-            }
+        #access-container input {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            width: 100%;
+            text-align: center;
+        }
 
-            .investment-section button {
-                padding: 8px;
-                font-size: 14px;
-            }
+        #access-container button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #F0B90B;
+            color: #14151A;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .error-message {
+            margin-top: 10px;
+            color: red;
+            font-size: 14px;
         }
     </style>
 </head>
-
 <body>
+    <!-- Section d'accès sécurisé -->
+    <div id="access-container">
+        <h1>Accès Sécurisé</h1>
+        <input type="password" id="access-code" placeholder="Entrez le code d'accès">
+        <button id="access-button">Valider</button>
+        <div class="error-message" id="error-message" style="display: none;">
+            Code incorrect, essayez encore.
+        </div>
+    </div>
 
-    <header>
+    <!-- Section principale (contenu masqué par défaut) -->
+    <header id="header-section" style="display: none;">
         <div class="logo">AFRICA INVESTISSEMENT</div>
         <div class="investment-section">
             <div class="balance" id="balance">Votre solde: 0 FCFA</div>
-            <button id="invest-button" aria-label="Investir maintenant">Je veux investir</button>
-            <button id="withdraw-button" aria-label="Retirer de l'argent">Retirer</button>
+            <button id="invest-button">Je veux investir</button>
+            <button id="withdraw-button">Retirer</button>
         </div>
     </header>
 
-    <div class="container">
-        <div class="chart-container">
-            <div id="chart">Graphique</div>
-        </div>
+    <div class="container" id="main-content" style="display: none;">
+        <!-- Graphique interactif -->
+        <div class="chart-container" id="chart"></div>
 
+        <!-- Informations et boutons -->
         <div class="info-container">
             <div class="price-info">
                 <div class="price" id="current-price">222.50</div>
                 <div class="price-change">-0.27 (-0.12%)</div>
             </div>
-
-            <button class="buy-button" id="buy-button">Acheter 222.50</button>
-            <button class="sell-button" id="sell-button">Vendre 222.50</button>
+            <button class="buy-button" id="buy-button">Acheter</button>
+            <button class="sell-button" id="sell-button">Vendre</button>
         </div>
     </div>
 
-    <div class="notifications notif-group" id="notifications"></div>
+    <!-- Notifications en bas de l'écran -->
+    <div class="notif-group" id="notifications"></div>
 
     <script src="https://s3.tradingview.com/tv.js"></script>
     <script>
         let balance = 0;
         let currentPrice = 222.50;
-
+    
+        // Éléments DOM
+        const accessCodeInput = document.getElementById('access-code');
+        const accessButton = document.getElementById('access-button');
+        const errorMessage = document.getElementById('error-message');
+        const accessContainer = document.getElementById('access-container');
+        const headerSection = document.getElementById('header-section'); // Référence au header
+        const mainContent = document.getElementById('main-content');
+        const balanceElement = document.getElementById('balance');
+    
+        // Fonction d'accès sécurisé
+        accessButton.addEventListener('click', () => {
+            const accessCode = accessCodeInput.value;
+            if (accessCode === "2577") {
+                accessContainer.style.display = 'none';
+                headerSection.style.display = 'block'; // Affiche le header
+                mainContent.style.display = 'block';  // Affiche le contenu principal
+                showRandomNotifications();           // Lancer les notifications
+            } else {
+                errorMessage.style.display = 'block';
+            }
+        });
+    
+        // Notifications de retrait
         const withdrawalNotifications = [
-        'Mamadou Diao a retiré 2 450 000 FCFA 🎉✨',
-    'Fatoumata Traoré a retiré 1 200 000 FCFA 🎉✨',
-    'Alioune Badara a retiré 650 000 FCFA 🎉✨',
-    'Aissatou Diallo a retiré 3 000 000 FCFA 🎉✨',
-    'Oumar Sarr a retiré 4 000 000 FCFA 🎉✨',
-    'Abdoulaye Ndiaye a retiré 950 000 FCFA 🎉✨',
-    'Khadidiatou Sy a retiré 1 500 000 FCFA 🎉✨',
-    'Serigne Diop a retiré 850 000 FCFA 🎉✨',
-    'Pape Cheikh a retiré 2 800 000 FCFA 🎉✨',
-    'Mame Diarra a retiré 700 000 FCFA 🎉✨',
-    'Seydou Kane a retiré 3 500 000 FCFA 🎉✨',
-    'Moustapha Faye a retiré 1 600 000 FCFA 🎉✨',
-    'Ousmane Cissé a retiré 2 700 000 FCFA 🎉✨',
-    'Mariam Fall a retiré 3 900 000 FCFA 🎉✨',
-    'Daba Sow a retiré 850 000 FCFA 🎉✨',
-    'Salimata Ba a retiré 1 300 000 FCFA 🎉✨',
-    'Modou Gaye a retiré 2 200 000 FCFA 🎉✨',
-    'Lamine Sarr a retiré 1 750 000 FCFA 🎉✨',
-    'Ndiouga Ndiaye a retiré 4 500 000 FCFA 🎉✨',
-    'Fatou Ndiaye a retiré 1 900 000 FCFA 🎉✨',
-    'Abiba Seck a retiré 2 050 000 FCFA 🎉✨',
-    'Ibrahima Diallo a retiré 850 000 FCFA 🎉✨',
-    'Thierno Bâ a retiré 3 250 000 FCFA 🎉✨',
-    'Adama Ndiaye a retiré 950 000 FCFA 🎉✨',
-    'Khady Seck a retiré 1 400 000 FCFA 🎉✨',
-    'Mbaye Diagne a retiré 3 600 000 FCFA 🎉✨',
-    'Awa Kane a retiré 2 150 000 FCFA 🎉✨',
-    'Yacine Sow a retiré 1 850 000 FCFA 🎉✨',
-    'Cheikh Sarr a retiré 4 700 000 FCFA 🎉✨',
-    'Abdoul Faye a retiré 2 000 000 FCFA 🎉✨',
-    'Amadou Diouf a retiré 1 600 000 FCFA 🎉✨',
-    'Mouhamed Ndiaye a retiré 2 500 000 FCFA 🎉✨',
-    'Mame Kalsoum a retiré 1 700 000 FCFA 🎉✨',
-    'Binta Sow a retiré 2 300 000 FCFA 🎉✨',
-    'Oumar Fall a retiré 3 800 000 FCFA 🎉✨',
-    'Khady Ndiaye a retiré 1 250 000 FCFA 🎉✨',
-    'Alioune Thiam a retiré 3 200 000 FCFA 🎉✨',
-    'Fatou Sow a retiré 2 000 000 FCFA 🎉✨',
-    'Youssouf Diallo a retiré 1 900 000 FCFA 🎉✨',
-    'Aissatou Mbacké a retiré 3 400 000 FCFA 🎉✨',
-    'Seydou Diop a retiré 1 300 000 FCFA 🎉✨',
-    'Moustapha Sow a retiré 2 800 000 FCFA 🎉✨',
-    'Aminata Ba a retiré 1 500 000 FCFA 🎉✨',
-    'Lamine Faye a retiré 4 300 000 FCFA 🎉✨',
-    'Aissatou Fall a retiré 2 900 000 FCFA 🎉✨',
-    'Adama Ba a retiré 1 600 000 FCFA 🎉✨',
-    'Ousmane Seck a retiré 2 400 000 FCFA 🎉✨',
-    'Fatoumata Ndiaye a retiré 1 800 000 FCFA 🎉✨',
-    'Cheikh Ndiaye a retiré 3 700 000 FCFA 🎉✨',
-    'Saliou Ba a retiré 2 200 000 FCFA 🎉✨',
-    'Aissatou Sow a retiré 1 400 000 FCFA 🎉✨',
-    'Modou Dia a retiré 3 000 000 FCFA 🎉✨',
-    'Sokhna Ndiaye a retiré 1 900 000 FCFA 🎉✨',
-    'Thierno Seck a retiré 2 100 000 FCFA 🎉✨',
-    'Ndeye Fatou a retiré 3 500 000 FCFA 🎉✨',
-    'Amadou Sow a retiré 1 700 000 FCFA 🎉✨',
-    'Mame Ndèye a retiré 4 000 000 FCFA 🎉✨',
-    'Serigne Sow a retiré 1 800 000 FCFA 🎉✨',
-    'Pape Amadou a retiré 2 600 000 FCFA 🎉✨',
-    'Fatou Ndao a retiré 1 500 000 FCFA 🎉✨',
-    'Khadidiatou Cissé a retiré 3 200 000 FCFA 🎉✨',
-    'Daba Ba a retiré 2 900 000 FCFA 🎉✨',
-    'Oumar Ndiaye a retiré 1 600 000 FCFA 🎉✨',
-    'Seydou Ba a retiré 4 500 000 FCFA 🎉✨',
-    'Moustapha Mbaye a retiré 1 700 000 FCFA 🎉✨',
-    'Aissatou Faye a retiré 3 000 000 FCFA 🎉✨',
-    'Sokhna Ba a retiré 2 300 000 FCFA 🎉✨',
-    'Ousmane Mbaye a retiré 1 100 000 FCFA 🎉✨',
-    'Adama Sy a retiré 2 700 000 FCFA 🎉✨',
-    'Awa Faye a retiré 1 800 000 FCFA 🎉✨',
-    'Khady Ndiaye a retiré 3 100 000 FCFA 🎉✨',
-    'Mamadou Ndiaye a retiré 1 600 000 FCFA 🎉✨',
-    'Moustapha Sy a retiré 2 400 000 FCFA 🎉✨',
-    'Fatou Diop a retiré 1 500 000 FCFA 🎉✨',
-    'Pape Ndiaye a retiré 3 300 000 FCFA 🎉✨',
-    'Aissatou Diagne a retiré 1 900 000 FCFA 🎉✨',
-    'Serigne Sarr a retiré 4 800 000 FCFA 🎉✨',
-    'Daba Ndiaye a retiré 2 500 000 FCFA 🎉✨',
-    'Seydou Seck a retiré 1 700 000 FCFA 🎉✨',
-    'Khadim Sow a retiré 3 400 000 FCFA 🎉✨',
-    'Amadou Bâ a retiré 1 600 000 FCFA 🎉✨',
-    'Fatoumata Ba a retiré 2 300 000 FCFA 🎉✨',
-    'Mame Toucouleur a retiré 1 850 000 FCFA 🎉✨',
-    'Oumar Thiam a retiré 4 200 000 FCFA 🎉✨',
-    'Khady Ba a retiré 1 900 000 FCFA 🎉✨',
-    'Alioune Sow a retiré 2 000 000 FCFA 🎉✨',
-    'Fatou Sow a retiré 1 600 000 FCFA 🎉✨',
-    'Seydou Bâ a retiré 3 700 000 FCFA 🎉✨',
-    'Oumar Mbaye a retiré 2 800 000 FCFA 🎉✨',
-    'Moustapha Faye a retiré 1 250 000 FCFA 🎉✨',
-    'Aissatou Cissé a retiré 4 500 000 FCFA 🎉✨',
-    'Mamadou Ba a retiré 1 700 000 FCFA 🎉✨',
-    'Modou Fall a retiré 2 400 000 FCFA 🎉✨',
-    'Fatou Ndiaye a retiré 1 900 000 FCFA 🎉✨',
-    'Cheikh Fall a retiré 3 100 000 FCFA 🎉✨',
-    'Binta Sow a retiré 2 050 000 FCFA 🎉✨',
-    'Amadou Cissé a retiré 1 600 000 FCFA 🎉✨',
-    'Daba Ba a retiré 2 500 000 FCFA 🎉✨',
-    'Aissatou Seck a retiré 1 800 000 FCFA 🎉✨',
-    'Khady Sow a retiré 3 900 000 FCFA 🎉✨',
-    'Moustapha Ndiaye a retiré 2 000 000 FCFA 🎉✨',
-    'Fatoumata Seck a retiré 1 300 000 FCFA 🎉✨',
-    'Ousmane Cissé a retiré 4 600 000 FCFA 🎉✨',
-    'Adama Seck a retiré 1 900 000 FCFA 🎉✨',
-    'Lamine Diop a retiré 2 700 000 FCFA 🎉✨',
-    'Aissatou Ndiaye a retiré 1 800 000 FCFA 🎉✨',
-    'Thierno Sow a retiré 3 400 000 FCFA 🎉✨',
-    'Binta Ndiaye a retiré 2 050 000 FCFA 🎉✨',
-    'Alioune Ndiaye a retiré 1 700 000 FCFA 🎉✨',
-    'Pape Diao a retiré 3 800 000 FCFA 🎉✨',
-    'Lamine Sow a retiré 1 600 000 FCFA 🎉✨',
-    'Serigne Mbacké a retiré 4 000 000 FCFA 🎉✨',
-    'Khadidiatou Sow a retiré 1 900 000 FCFA 🎉✨',
-    'Fatou Ndiaye a retiré 3 500 000 FCFA 🎉✨',
-    'Oumar Sow a retiré 1 800 000 FCFA 🎉✨',
-    'Aissatou Diao a retiré 2 600 000 FCFA 🎉✨',
-    'Modou Diop a retiré 1 700 000 FCFA 🎉✨',
-    'Yacine Seck a retiré 4 300 000 FCFA 🎉✨',
-    'Mame Ndao a retiré 1 500 000 FCFA 🎉✨',
-    'Ndiouga Ba a retiré 3 200 000 FCFA 🎉✨',
-    'Khadim Ndiaye a retiré 2 800 000 FCFA 🎉✨',
-    'Ousmane Faye a retiré 1 400 000 FCFA 🎉✨',
-    'Moussa Ndiaye a retiré 3 600 000 FCFA 🎉✨',
-    'Aissatou Ba a retiré 1 200 000 FCFA 🎉✨',
-    'Mamadou Ba a retiré 4 100 000 FCFA 🎉✨',
-    'Serigne Ba a retiré 1 600 000 FCFA 🎉✨',
-    'Fatoumata Sow a retiré 2 300 000 FCFA 🎉✨',
-    'Sokhna Diop a retiré 1 900 000 FCFA 🎉✨',
-    'Modou Sow a retiré 3 400 000 FCFA 🎉✨',
-    'Khady Ndiaye a retiré 1 800 000 FCFA 🎉✨',
-    'Aminata Fall a retiré 2 500 000 FCFA 🎉✨',
-    'Binta Cissé a retiré 1 100 000 FCFA 🎉✨',
-    'Oumar Diop a retiré 3 700 000 FCFA 🎉✨',
-    'Thierno Ba a retiré 2 600 000 FCFA 🎉✨',
-    'Aissatou Kone a retiré 1 400 000 FCFA 🎉✨',
-    'Khadim Ba a retiré 4 800 000 FCFA 🎉✨',
-    'Aminata Sow a retiré 2 000 000 FCFA 🎉✨',
-    'Modou Faye a retiré 1 500 000 FCFA 🎉✨',
-    'Ousmane Ndiaye a retiré 3 500 000 FCFA 🎉✨',
-    'Fatoumata Bâ a retiré 1 300 000 FCFA 🎉✨',
-    'Amadou Kone a retiré 2 400 000 FCFA 🎉✨',
-    'Mame Toudou a retiré 1 800 000 FCFA 🎉✨',
-    'Sokhna Ndoye a retiré 4 200 000 FCFA 🎉✨',
-    'Serigne Cissé a retiré 1 900 000 FCFA 🎉✨',
-    'Alioune Sarr a retiré 3 600 000 FCFA 🎉✨',
-    'Pape Ndao a retiré 1 700 000 FCFA 🎉✨',
-    'Fatou Bâ a retiré 2 500 000 FCFA 🎉✨',
-    'Daba Fall a retiré 1 800 000 FCFA 🎉✨',
-    'Aissatou Ndiaye a retiré 3 400 000 FCFA 🎉✨',
-    'Modou Ndao a retiré 2 300 000 FCFA 🎉✨',
-    'Khady Ndiaye a retiré 1 200 000 FCFA 🎉✨',
-    'Thierno Cissé a retiré 4 000 000 FCFA 🎉✨',
-    'Alioune Sow a retiré 1 900 000 FCFA 🎉✨',
-    'Fatoumata Kone a retiré 2 700 000 FCFA 🎉✨',
-    'Moustapha Sarr a retiré 1 800 000 FCFA 🎉✨',
-    'Ousmane Ba a retiré 3 300 000 FCFA 🎉✨',
-    'Aissatou Sy a retiré 1 400 000 FCFA 🎉✨',
-    'Pape Sow a retiré 4 500 000 FCFA 🎉✨',
-    'Binta Ba a retiré 1 700 000 FCFA 🎉✨',
-    'Daba Diop a retiré 3 100 000 FCFA 🎉✨',
-    'Aminata Sow a retiré 1 600 000 FCFA 🎉✨',
-    'Khady Bâ a retiré 2 600 000 FCFA 🎉✨',
-    'Amadou Ndao a retiré 1 200 000 FCFA 🎉✨',
-    'Ousmane Sow a retiré 4 800 000 FCFA 🎉✨',
-    'Fatoumata Ndiaye a retiré 1 900 000 FCFA 🎉✨',
-    'Sokhna Ba a retiré 3 500 000 FCFA 🎉✨',
-    'Mame Ndiaye a retiré 1 400 000 FCFA 🎉✨',
-    'Aissatou Sylla a retiré 2 500 000 FCFA 🎉✨'
-];
-
+            'Mamadou Diao a retiré 2 450 000 FCFA 🎉✨',
+            'Fatoumata Traoré a retiré 1 200 000 FCFA 🎉✨',
+            'Alioune Badara a retiré 650 000 FCFA 🎉✨',
+            'Aissatou Diallo a retiré 3 000 000 FCFA 🎉✨',
+            'Oumar Sarr a retiré 4 000 000 FCFA 🎉✨',
+            'Abdoulaye Ndiaye a retiré 950 000 FCFA 🎉✨',
+            'Aissatou Sylla a retiré 2 500 000 FCFA 🎉✨'
+        ];
+    
         function showNotification(message) {
             const notificationContainer = document.getElementById('notifications');
             const notificationItem = document.createElement('div');
             notificationItem.classList.add('notif');
             notificationItem.innerText = message;
             notificationContainer.appendChild(notificationItem);
-
+    
             setTimeout(() => {
                 notificationItem.style.opacity = '0';
-                setTimeout(() => {
-                    notificationItem.remove();
-                }, 1000);
+                setTimeout(() => notificationItem.remove(), 1000);
             }, 2000);
         }
-
+    
         function showRandomNotifications() {
             if (withdrawalNotifications.length > 0) {
                 const randomIndex = Math.floor(Math.random() * withdrawalNotifications.length);
                 const randomMessage = withdrawalNotifications[randomIndex];
                 showNotification(randomMessage);
                 withdrawalNotifications.splice(randomIndex, 1);
-
+    
                 const randomDelay = Math.random() * 2000 + 1000;
                 setTimeout(showRandomNotifications, randomDelay);
             }
         }
-
-        window.onload = () => {
-            showRandomNotifications();
-        };
-
+    
+        // Boutons d'investissement et retrait
         document.getElementById('invest-button').addEventListener('click', () => {
-    window.location.href = "africa.html"; // Chemin relatif
-});
-
+            window.location.href = "africa.html";
+        });
+    
         document.getElementById('withdraw-button').addEventListener('click', () => {
             alert("Veuillez investir");
         });
-
+    
+        // Achat/Vente d'actions
         document.getElementById('buy-button').addEventListener('click', () => {
-            const cost = currentPrice;
-            if (balance >= cost) {
-                balance -= cost;
+            if (balance >= currentPrice) {
+                balance -= currentPrice;
                 updateBalance();
-                showNotification(Vous avez acheté une action à ${cost} FCFA.);
+                showNotification(`Vous avez acheté une action à ${currentPrice} FCFA.`);
             } else {
                 alert('Solde insuffisant pour acheter cette action');
             }
         });
-
+    
         document.getElementById('sell-button').addEventListener('click', () => {
             balance += currentPrice;
             updateBalance();
-            showNotification(Vous avez vendu une action à ${currentPrice} FCFA.);
+            showNotification(`Vous avez vendu une action à ${currentPrice} FCFA.`);
         });
-
+    
         function updateBalance() {
-            document.getElementById('balance').innerText = Votre solde: ${balance.toLocaleString()} FCFA;
+            balanceElement.innerText = `Votre solde: ${balance.toLocaleString()} FCFA`;
         }
-
+    
+        // Intégration du widget TradingView
         new TradingView.widget({
             container_id: "chart",
             symbol: "NASDAQ:AAPL",
@@ -509,6 +348,8 @@
             study_count: 0,
         });
     </script>
+    
+    
 </body>
 
 </html>
