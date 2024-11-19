@@ -218,79 +218,11 @@
                 font-size: 14px;
             }
         }
-/* Spécifique à la page d'accès */
-.access-page {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
-    color: #333;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-}
-
-.access-page form {
-    background-color: #fff;
-    padding: 20px 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    width: 100%;
-    max-width: 400px;
-}
-
-.access-page h1 {
-    margin-bottom: 20px;
-    color: #444;
-    font-size: 24px;
-}
-
-.access-page input[type="password"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 16px;
-    box-sizing: border-box;
-}
-
-.access-page button {
-    background-color: #007BFF;
-    color: #fff;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 4px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    width: 100%;
-}
-
-.access-page button:hover {
-    background-color: #0056b3;
-}
-
-.access-page .alert {
-    color: red;
-    font-size: 14px;
-    margin-top: -15px;
-    margin-bottom: 10px;
-}
-
-        
     </style>
 </head>
 
-<body class="access-page">
-    <h1>Accès Sécurisé</h1>
-    <form id="access-form">
-        <label for="access-code">Entrez le code d'accès :</label>
-        <input type="password" id="access-code" required>
-        <div class="alert" style="display: none;">Code incorrect, veuillez réessayer.</div>
-        <button type="submit">Valider</button>
-    </form>
+<body>
+
     <header>
         <div class="logo">AFRICA INVESTISSEMENT</div>
         <div class="investment-section">
@@ -320,21 +252,6 @@
 
     <script src="https://s3.tradingview.com/tv.js"></script>
     <script>
- document.getElementById('access-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const code = document.getElementById('access-code').value;
-
-            // Définissez le code d'accès ici
-            const accessCode = "12345";
-
-            if (code === accessCode) {
-                window.location.href = "https://votresite.com";
-            } else {
-                const alert = document.querySelector('.alert');
-                alert.style.display = 'block';
-            }
-        });
-        
         let balance = 0;
         let currentPrice = 222.50;
 
@@ -553,7 +470,7 @@
             if (balance >= cost) {
                 balance -= cost;
                 updateBalance();
-                showNotification(`Vous avez acheté une action à ${cost} FCFA.`);
+                showNotification(Vous avez acheté une action à ${cost} FCFA.);
             } else {
                 alert('Solde insuffisant pour acheter cette action');
             }
@@ -562,11 +479,11 @@
         document.getElementById('sell-button').addEventListener('click', () => {
             balance += currentPrice;
             updateBalance();
-            showNotification(`Vous avez vendu une action à ${currentPrice} FCFA.`);
+            showNotification(Vous avez vendu une action à ${currentPrice} FCFA.);
         });
 
         function updateBalance() {
-            document.getElementById('balance').innerText = `Votre solde: ${balance.toLocaleString()} FCFA`;
+            document.getElementById('balance').innerText = Votre solde: ${balance.toLocaleString()} FCFA;
         }
 
         new TradingView.widget({
