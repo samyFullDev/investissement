@@ -98,7 +98,13 @@
     </style>
 </head>
 <body>
-    <div id="investor-info" class="interface"></div>
+    <div id="investor-info" class="interface">
+        <h3>Informations de l'investisseur</h3>
+        <p><strong>Nom :</strong> <span id="info-nom"></span></p>
+        <p><strong>Prénom :</strong> <span id="info-prenom"></span></p>
+        <p><strong>Montant :</strong> <span id="info-montant"></span> FCFA</p>
+    </div>
+
     <div class="background-image"></div>
     <div class="interface">   
         <div class="transfer-text" style="color:#f3ba2f" id="invest">En attente des fonds d'investissement</div>
@@ -106,13 +112,18 @@
             <div class="progress-bar" id="progress-bar">0%</div>
         </div>
         <br>
-        <div><p style="color: #f04747; font-weight: bold;" id="alert-msg"></p></div>  
+        <p style="color: #f04747; font-weight: bold;" id="alert-msg"></p>  
         <input type="button" value="Démarrer l'investissement" class="button" id="btn-deblock">
         <input type="button" value="WhatsApp" class="whatsapp-button" id="btn-whatsapp" onclick="window.open('https://wa.me/2250574090541', '_blank');">
         <input type="button" value="Recevoir mes bénéfices" class="button" id="btn-receive" style="display: none;">
     </div>
 
     <script>
+        // Récupérer les infos du localStorage
+        document.getElementById('info-nom').innerText = localStorage.getItem('nom') || "Non renseigné";
+        document.getElementById('info-prenom').innerText = localStorage.getItem('prenom') || "Non renseigné";
+        document.getElementById('info-montant').innerText = localStorage.getItem('montant') || "0";
+
         document.getElementById('btn-deblock').addEventListener('click', () => {
             let code2 = prompt("Veuillez entrer le code fourni par le directeur de l'entreprise");
             if (code2 === "7414") {
@@ -123,10 +134,6 @@
             } else {
                 alert("Code incorrect");
             }
-        });
-
-        document.getElementById('btn-receive').addEventListener('click', () => {
-            alert('Veuillez payer les frais demandés');
         });
 
         function startLoading() {
