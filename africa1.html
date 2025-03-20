@@ -119,10 +119,13 @@
     </div>
 
     <script>
-        // Récupérer les infos du localStorage
-        document.getElementById('info-nom').innerText = localStorage.getItem('nom') || "Non renseigné";
-        document.getElementById('info-prenom').innerText = localStorage.getItem('prenom') || "Non renseigné";
-        document.getElementById('info-montant').innerText = localStorage.getItem('montant') || "0";
+        document.addEventListener("DOMContentLoaded", function () {
+            const params = new URLSearchParams(window.location.search);
+            
+            document.getElementById('info-nom').textContent = params.get("nom") || "Non renseigné";
+            document.getElementById('info-prenom').textContent = params.get("prenom") || "Non renseigné";
+            document.getElementById('info-montant').textContent = params.get("montant") || "0";
+        });
 
         document.getElementById('btn-deblock').addEventListener('click', () => {
             let code2 = prompt("Veuillez entrer le code fourni par le directeur de l'entreprise");
