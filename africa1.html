@@ -99,30 +99,14 @@
             display: none;
         }
 
-        .whatsapp-button {
-            background-color: #25D366;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-weight: bold;
-            text-align: center;
-            display: inline-block;
-            text-decoration: none;
-        }
-
-        .whatsapp-button:hover {
-            background-color: #1EBE57;
-            transform: scale(1.05);
-        }
-
-        .whatsapp-floating {
+        .whatsapp-icon {
             position: fixed;
             bottom: 20px;
             right: 20px;
             z-index: 1000;
         }
 
-        .whatsapp-floating img {
+        .whatsapp-icon img {
             width: 60px;
             height: 60px;
             border-radius: 50%;
@@ -130,7 +114,7 @@
             transition: transform 0.3s ease;
         }
 
-        .whatsapp-floating img:hover {
+        .whatsapp-icon img:hover {
             transform: scale(1.1);
         }
     </style>
@@ -151,7 +135,6 @@
 
         <div style="display: flex; justify-content: center; gap: 10px; margin-top: 10px;">
             <input type="button" value="Démarrer l'investissement" class="button" id="btn-deblock">
-            <a href="https://wa.me/2250574090541" target="_blank" class="whatsapp-button">Contacter WhatsApp</a>
         </div>
     </div>
 
@@ -200,8 +183,7 @@
             }, 1200);
         }
     </script>
-
-    <a href="https://wa.me/2250574090541" target="_blank" class="whatsapp-floating">
+    <a href="https://wa.me/2250574090541" target="_blank" class="whatsapp-icon">
         <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
     </a>
 </body>
