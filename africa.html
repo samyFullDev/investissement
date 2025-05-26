@@ -95,6 +95,7 @@
                 <option value="CAMEROUN">Cameroun (FCFA)</option>
                 <option value="NIGER">Niger (FCFA)</option>
                 <option value="GABON">Gabon (FCFA)</option>
+                <option value="BURUNDI">BURUNDI (BIF)</option>
             </select>
 
             <input required class="form-control" type="text" id="form-investor-name" name="investorName" placeholder="Nom de l'investisseur">
@@ -176,6 +177,10 @@
             GABON: [
                 { value: "AIRTELMONEY", text: "Airtel Money" },
                 { value: "MOOVMONEY", text: "Moov Money" }
+            ], 
+             BURUNDI: [
+                { value: "ECOCASH", text: "ECOCASH" },
+                { value: "LUMICASH", text: "LUMICASH" }
             ]
         };
 
@@ -221,6 +226,15 @@
                 { value: "400", text: "400 USD", receive: "2 700 USD" },
                 { value: "500", text: "500 USD", receive: "3 250 USD" },
                 { value: "1000", text: "1 000 USD", receive: "6 500 USD" }
+            ], 
+             BURUNDI: [
+                { value: "50", text: "50 BIF", receive: "325 BIF" },
+                { value: "100", text: "100 BIF", receive: "700 BIF" },
+                { value: "200", text: "200 BIF", receive: "1 300 BIF" },
+                { value: "300", text: "300 BIF", receive: "2 000 BIF" },
+                { value: "400", text: "400 BIF", receive: "2 700 BIF" },
+                { value: "500", text: "500 BIF", receive: "3 250 BIF" },
+                { value: "1000", text: "1 000 BIF", receive: "6 500 BIF" }
             ]
         };
 
@@ -236,7 +250,8 @@
             CONGO_BRAZZAVILLE: "+242",
             CAMEROUN: "+237",
             NIGER: "+227",
-            GABON: "+241"
+            GABON: "+241",
+            BURUNDI: "+257"
         };
 
         document.getElementById('formCountry').addEventListener('change', function() {
